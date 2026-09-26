@@ -14,7 +14,7 @@ db.exec(`
     moderadorId TEXT,
     tipo TEXT,
     motivo TEXT,
-    data TEXT DEFAULT (datetime('now'))
+    data INTEGER DEFAULT (strftime('%s','now'))
   );
 
   CREATE TABLE IF NOT EXISTS avisos (
