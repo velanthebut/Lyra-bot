@@ -12,7 +12,7 @@ module.exports = {
     const quantidade = parseInt(args[0]);
 
     if (!quantidade || quantidade < 1 || quantidade > 1000)
-      return msg.reply('🔔 Este comando apaga mensagens deste canal!\nEu preciso que você me informe quantas mensagens apagar.\n**Fica assim:**\n`--clear 20`\nEu consigo apagar até 1000 mensagens por vez!');
+      return msg.reply('🔔 Este comando apaga mensagens deste canal!\nEu preciso que você me informe quantas mensagens apagar.\n**Fica assim:**\n`--clear 20`\n*Eu consigo apagar até 1000 mensagens por vez!*');
 
     await msg.delete().catch(() => {});
 
