@@ -1,6 +1,4 @@
-const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const db = require('../../database');
-const t = require('../../textos.json');
+const { PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
   nome: 'clear',
@@ -9,17 +7,12 @@ module.exports = {
 
   executar: async (client, msg, args) => {
     if (!msg.member.permissions.has(PermissionFlagsBits.ManageMessages))
-      return msg.reply(`❌ ${t.sistema.semPermissao}`);
+      return msg.reply('❌ Você precisa da permissão `Manage Messages` para usar este comando.');
 
     const quantidade = parseInt(args[0]);
 
-    if (!quantidade || quantidade < 1 || quantidade > 1000) {
-      return msg.reply(
-        '💜 **Como usar:** `--clear número`\n' +
-        'Limpe mensagens deste canal!\n' +
-        '📊 Valores aceitos: **1 a 1000** mensagens'
-      );
-    }
+    if (!quantidade || quantidade < 1 || quantidade > 1000)
+      return msg.reply('🔔 Este comando apaga mensagens deste canal!\nEu preciso que você me informe quantas mensagens apagar.\n**Fica assim:**\n`--clear 20`\nEu consigo apagar até 1000 mensagens por vez!');
 
     await msg.delete().catch(() => {});
 
@@ -33,31 +26,6 @@ module.exports = {
       if (lote.size === 0) break;
     }
 
-    const embed = new EmbedBuilder()
-      .setColor('#2ECC71')
-      .setAuthor({ name: t.moderação.limpar.titulo, iconURL: msg.guild.iconURL() })
-      .setDescription(`Foram apagadas **${totalApagado}** mensagens deste canal! ✨`)
-      .addFields(
-        { name: '🧹 Por', value: `${msg.author}`, inline: true },
-        { name: '📍 Canal', value: `${msg.channel}`, inline: true }
-      )
-      .setTimestamp();
-
-    const confirmacao = await msg.channel.send({ embeds: [embed] });
-    setTimeout(() => confirmacao.delete().catch(() => {}), 6000);
-
-    const canalLog = msg.guild.channels.cache.get(db.getConfig('mod_canalLog'));
-    if (canalLog) {
-      const logEmbed = new EmbedBuilder()
-        .setColor('#3498DB')
-        .setAuthor({ name: '🧹 Mensagens Limpadas', iconURL: msg.guild.iconURL() })
-        .addFields(
-          { name: '📍 Canal', value: `${msg.channel}`, inline: true },
-          { name: '📊 Quantidade', value: `**${totalApagado}**`, inline: true },
-          { name: '🛡️ Por', value: `${msg.author}` }
-        )
-        .setTimestamp();
-      await canalLog.send({ embeds: [logEmbed] });
-    }
+    const confirmacao = await msg.channel.send(`✅ Pronto! Apaguei **${totalApagado}** mensagens deste chat!`);
   }
 };
