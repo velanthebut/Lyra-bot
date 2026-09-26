@@ -1,0 +1,47 @@
+{
+  "sistema": {
+    "semPermissao": "❌ Você não tem permissão pra isso!",
+    "sucesso": "✅ Pronto! Tudo certinho 😁",
+    "erro": "😅 Eita, algo deu errado... perdão!",
+    "comandoNaoExiste": "🤔 Não conheço esse comando ainda..."
+  },
+  "moderação": {
+    "ban": {
+      "titulo": "🚫 Usuário Banido",
+      "mensagem": "**{alvo}** foi banido(a)!\nMotivo: {motivo}\nPor: {moderador}",
+      "dm": "Oii... 💌 Você foi banido(a) do servidor **{servidor}**.\nMotivo: {motivo}\nSe acha que foi engano, fale com um moderador.",
+      "semMotivo": "Nenhum motivo especificado"
+    },
+    "kick": {
+      "titulo": "👢 Usuário Expulso",
+      "mensagem": "**{alvo}** foi expulso(a)!\nMotivo: {motivo}\nPor: {moderador}",
+      "dm": "Você foi expulso(a) de **{servidor}**.\nMotivo: {motivo}"
+    },
+    "mute": {
+      "titulo": "🔇 Usuário Silenciado",
+      "mensagem": "**{alvo}** ficou em silêncio por **{tempo}**!\nMotivo: {motivo}",
+      "dm": "Você foi silenciado(a) em **{servidor}** por **{tempo}**.\nMotivo: {motivo}"
+    },
+    "limpar": {
+      "titulo": "🧹 Limpeza Concluída",
+      "mensagem": "✨ Apaguei **{quantidade}** mensagens daqui!"
+    },
+    "aviso": {
+      "titulo": "⚠️ Aviso Registrado",
+      "mensagem": "**{alvo}** recebeu um aviso!\nMotivo: {motivo}\nTotal de avisos: {contagem}"
+    }
+  },
+  "niveis": {
+    "subiuNivel": "✨ Parabéns, **{usuario}**! Você chegou ao **nível {nivel}**! Que orgulho! Continue assim!",
+    "rankVazio": "Esse usuário ainda não tem atividade registrada!",
+    "topTitulo": "Os mais falastrões ✨— {servidor}"
+  },
+  "boasVindas": {
+    "padraoCanal": "Olá **{usuario}**! Que alegria te ver por aqui!\nSeja muito bem-vindo(a) ao servidor!",
+    "padraoDM": "Oiii! Que bom que você entrou em **{servidor}**!\nSinta-se em casa e aproveite! 😃"
+  },
+  "despedida": {
+    "padraoCanal": "Até mais, **{usuario}**... Foi bom ter você por aqui! Boa sorte onde for!",
+    "padraoDM": "Obrigado(a) por ter feito parte em **{servidor}**! Volte sempre que quiser! 💌"
+  }
+}
