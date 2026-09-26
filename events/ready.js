@@ -1,3 +1,3 @@
 module.exports = (client) => {
-  console.log(`🌸 Lyra conectada como ${client.user.username} — pronta! ✨`);
+  console.log(`Estou online como ${client.user.username} — pronta! ✨`);
 };
