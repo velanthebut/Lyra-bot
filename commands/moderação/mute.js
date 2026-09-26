@@ -33,7 +33,7 @@ module.exports = {
     const motivo = args.slice(2).join(' ') || 'Sem motivo informado';
 
     if (!alvo || !duracao || duracao > 2419200000)
-      return msg.reply('🔔 Este comando silencia o usuário por um tempo determinado!\nEu preciso que você me informe quem, por quanto tempo, e se desejar, o motivo.\n**Fica assim:**\n`--mute @user 30m perturbando o chat`\nEu vou entender se você usar `s` para seg, `m` para min... Até um máximo de 28 dias!');
+      return msg.reply('🔔 Este comando silencia o usuário por um tempo determinado!\nEu preciso que você me informe quem, por quanto tempo, e se desejar, o motivo.\n**Fica assim:**\n`--mute @user 30m perturbando o chat`\n*Eu vou entender se você usar `s` para seg, `m` para min... Até um máximo de 28 dias!*');
 
     if (alvo.id === msg.author.id)
       return msg.reply('❌ Você vai se silenciar? Vou fingir que não li isso...');
