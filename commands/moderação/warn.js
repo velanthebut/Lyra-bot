@@ -15,7 +15,7 @@ module.exports = {
     const motivo = args.slice(1).join(' ') || 'Sem motivo informado';
 
     if (!alvo)
-      return msg.reply('🔔 Este comando dá um aviso ao usuário punido!\nEu preciso que você me informe quem receberá a punição, e se desejar, pode incluir um motivo para isso. Fica assim:\n`--warn @user xingamentos excessivos!`');
+      return msg.reply('🔔 Este comando dá um aviso ao usuário punido!\nEu preciso que você me informe quem receberá a punição, e se desejar, pode incluir um motivo para isso.\n**Fica assim:**\n`--warn @user xingamentos excessivos!`');
 
     if (alvo.id === msg.author.id)
       return msg.reply('❌ Você avisar a você mesmo... Pera, eu tô me bugando!');
