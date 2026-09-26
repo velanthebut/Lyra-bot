@@ -26,8 +26,8 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor('#5865F2')
-      .setTitle(`Histórico — ${alvo.tag}`)
-      .setAuthor({ name: `${qtdAvisos} Avisos ativos`, iconURL: alvo.displayAvatarURL() })
+      .setTitle(`${qtdAvisos} Avisos ativos`)
+      .setAuthor({ name: `Histórico — ${alvo.tag}`, iconURL: alvo.displayAvatarURL() })
   
     if (registros.length === 0) {
       embed.setDescription('✅ Nenhum registro encontrado! É um anjo!');
