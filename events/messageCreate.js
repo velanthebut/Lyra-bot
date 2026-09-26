@@ -25,7 +25,7 @@ module.exports = async (client, message) => {
       try {
         await cmd.executar(client, message, args, db);
       } catch (e) {
-        message.reply('😅 Ops, algo deu errado...');
+        message.reply('Um erro inesperado aconteceu... 😟/nTava tudo bem, e de repente... Buh! Sumiu. Tente novamente, e se o erro persistir, por favor, contate o meu desenvolvedor. Peço desculpas pelo incoveniente...');
         console.error(e);
       }
       return;
