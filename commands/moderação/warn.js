@@ -9,7 +9,7 @@ module.exports = {
 
   executar: async (client, msg, args) => {
     if (!msg.member.permissions.has(PermissionFlagsBits.ModerateMembers))
-      return msg.reply(`❌ ${t.sistema.semPermissao}`);
+      return msg.reply(`❌ Você precisa da permissão `Moderate Members` para usar este comando.`);
 
     const alvo = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]);
     const motivo = args.slice(1).join(' ') || 'Sem motivo informado';
@@ -29,27 +29,11 @@ module.exports = {
       VALUES (?, ?, 'warn', ?)
     `).run(alvo.id, msg.author.id, motivo);
 
-    const embed = new EmbedBuilder()
-      .setColor('#F1C40F')
-      .setAuthor({ name: t.moderação.aviso.titulo, iconURL: msg.guild.iconURL() })
-      .setThumbnail(alvo.user.displayAvatarURL({ size: 256 }))
-      .addFields(
-        { name: '👤 Usuário', value: `**${alvo.user.tag}**`, inline: true },
-        { name: '📋 Total de Avisos', value: `**${nova}**`, inline: true },
-        { name: '🛡️ Moderador', value: `**${msg.author.tag}**`, inline: true },
-        { name: '📝 Motivo', value: motivo }
-      )
-      .setTimestamp();
-
-    const canalLog = msg.guild.channels.cache.get(db.getConfig('mod_canalLog'));
-    if (canalLog) await canalLog.send({ embeds: [embed] }).catch(() => {});
-
-    // ✅ Corrigi a lógica sem alterar os textos
     let mensagem = '✅ Punição aplicada! ';
     if (nova >= 5) {
       mensagem += 'O usuário foi automaticamente silenciado por **2 horas** por receber 5 avisos! ';
     } else if (nova >= 3) {
-      mensagem += 'Tome cuidado! Ao receber 5 avisos, há uma punição imediata... 🗣️ ';
+      mensagem += '\nTome cuidado! Ao receber 5 avisos, há uma punição imediata... 🗣️ ';
     } else {
       mensagem += 'Lembre-se de seguir as regras da próxima vez! 🗣️';
     }
