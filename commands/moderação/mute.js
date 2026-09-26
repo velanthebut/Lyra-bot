@@ -1,10 +1,8 @@
-const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { PermissionFlagsBits } = require('discord.js');
 const db = require('../../database');
-const t = require('../../textos.json');
-const cfg = require('../../config.json');
 
 function converterTempo(texto) {
-  const match = texto.match(/^(\d+)([smhd])$/i);
+  const match = texto?.match(/^(\d+)([smhd])$/i);
   if (!match) return null;
   const valor = parseInt(match[1]);
   const unidade = match[2].toLowerCase();
@@ -28,62 +26,35 @@ module.exports = {
 
   executar: async (client, msg, args) => {
     if (!msg.member.permissions.has(PermissionFlagsBits.ModerateMembers))
-      return msg.reply(`❌ ${t.sistema.semPermissao}`);
+      return msg.reply('❌ Você precisa da permissão `Moderate Members` para usar este comando.');
 
     const alvo = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]);
     const duracao = converterTempo(args[1]);
     const motivo = args.slice(2).join(' ') || 'Sem motivo informado';
 
-    if (!alvo || !duracao || duracao > 2419200000) {
-      return msg.reply(
-        '💜 **Como usar:** `--mute @Usuário tempo motivo`\n' +
-        'Exemplos: `--mute @Maria 30m Perturbando`\n' +
-        'Unidades: `s` segundos | `m` minutos | `h` horas | `d` dias\n' +
-        '⏳ Máximo: 28 dias'
-      );
-    }
+    if (!alvo || !duracao || duracao > 2419200000)
+      return msg.reply('🔔 Este comando silencia o usuário por um tempo determinado!\nEu preciso que você me informe quem, por quanto tempo, e se desejar, o motivo.\n**Fica assim:**\n`--mute @user 30m perturbando o chat`\nEu vou entender se você usar `s` para seg, `m` para min... Até um máximo de 28 dias!');
 
     if (alvo.id === msg.author.id)
-      return msg.reply('🤭 Silenciar a si mesmo? Não faz sentido, né? 😅');
+      return msg.reply('❌ Você vai se silenciar? Vou fingir que não li isso...');
 
-    if (alvo.roles.highest.position >= msg.member.roles.highest.position && msg.author.id !== cfg.donoId)
-      return msg.reply('⚠️ Esse usuário tem cargo igual ou maior que o seu!');
+    if (alvo.roles.highest.position >= msg.member.roles.highest.position && msg.guild.ownerId !== msg.author.id)
+      return msg.reply('⚠️ Esse usuário tem um cargo igual ou maior que o seu, não posso deixar você fazer isso.');
 
     if (!alvo.moderatable)
-      return msg.reply('❌ Não consigo silenciar esse usuário!');
+      return msg.reply('❌ Não consigo silenciar esse usuário! Verifique se meu cargo está acima do dele.');
 
     const tempoFormatado = formatarTempo(duracao);
 
-    if (db.getConfig('mod_dmPunicoes', 'sim') === 'sim') {
-      const textoDM = t.moderação.mute.dm
-        .replace(/{servidor}/g, msg.guild.name)
-        .replace(/{tempo}/g, tempoFormatado)
-        .replace(/{motivo}/g, motivo);
-      await alvo.send(textoDM).catch(() => {});
-    }
+    await alvo.send(`Você foi silenciado(a) em **${msg.guild.name}** por **${tempoFormatado}**.\nMotivo: ${motivo}`).catch(() => {});
 
     db.prepare(`
       INSERT INTO punicoes (usuarioId, moderadorId, tipo, motivo)
       VALUES (?, ?, 'mute', ?)
     `).run(alvo.id, msg.author.id, `${tempoFormatado} — ${motivo}`);
 
-    const embed = new EmbedBuilder()
-      .setColor('#9B59B6')
-      .setAuthor({ name: t.moderação.mute.titulo, iconURL: msg.guild.iconURL() })
-      .setThumbnail(alvo.user.displayAvatarURL({ size: 256 }))
-      .addFields(
-        { name: '👤 Usuário', value: `**${alvo.user.tag}**\n\`${alvo.id}\``, inline: true },
-        { name: '⏱️ Duração', value: `**${tempoFormatado}**`, inline: true },
-        { name: '🛡️ Moderador', value: `**${msg.author.tag}**`, inline: true },
-        { name: '📝 Motivo', value: motivo }
-      )
-      .setFooter({ text: 'Expira automaticamente' })
-      .setTimestamp();
+    await alvo.timeout(duracao, `${motivo} | Aplicado por: ${msg.author.tag}`);
 
-    const canalLog = msg.guild.channels.cache.get(db.getConfig('mod_canalLog'));
-    if (canalLog) await canalLog.send({ embeds: [embed] });
-
-    await alvo.timeout(duracao, motivo);
-    await msg.reply({ embeds: [embed] });
+    await msg.reply('✅ Punição aplicada! O registro foi adicionado ao histórico do servidor.');
   }
 };
