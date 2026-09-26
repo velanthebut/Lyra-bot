@@ -1,0 +1,8 @@
+{
+  "token": "OTYzNTU2ODEwMDAwODU1MTAw.Gpyaye.WtQa1gMkIipMBYM5bNqqB-73ZtMsKE3zHnxq6Q",
+  "prefix": "--",
+  "donoId": "666079017744728074",
+  "corPadrao": "#e8b4f8",
+  "xpPorMensagem": { "min": 5, "max": 15 },
+  "cooldownXP": 60000
+}
