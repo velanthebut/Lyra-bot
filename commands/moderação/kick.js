@@ -1,7 +1,5 @@
-const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { PermissionFlagsBits } = require('discord.js');
 const db = require('../../database');
-const t = require('../../textos.json');
-const cfg = require('../../config.json');
 
 module.exports = {
   nome: 'kick',
@@ -10,51 +8,32 @@ module.exports = {
 
   executar: async (client, msg, args) => {
     if (!msg.member.permissions.has(PermissionFlagsBits.KickMembers))
-      return msg.reply(`❌ ${t.sistema.semPermissao}`);
+      return msg.reply('❌ Você precisa da permissão `Kick Members` para usar este comando.');
 
     const alvo = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]);
-    const motivo = args.slice(1).join(' ') || t.moderação.kick.semMotivo;
+    const motivo = args.slice(1).join(' ') || 'Sem motivo informado';
 
     if (!alvo)
-      return msg.reply('💜 **Como usar:** `--kick @Usuário motivo`\nMencione quem deseja expulsar!');
+      return msg.reply('🔔 Este comando expulsa o usuário do servidor!\nEu preciso que você me informe quem será expulso, e se desejar, pode incluir um motivo.\n**Fica assim:**\n`--kick @user perturbando o chat`');
 
     if (alvo.id === msg.author.id)
-      return msg.reply('🤭 Se expulsar? Não dá, hein! 😅');
+      return msg.reply('❌ Você vai se expulsar? Vou fingir que não vi isso...');
 
-    if (alvo.roles.highest.position >= msg.member.roles.highest.position && msg.author.id !== cfg.donoId)
-      return msg.reply('⚠️ Esse usuário tem cargo igual ou maior!');
+    if (alvo.roles.highest.position >= msg.member.roles.highest.position && msg.guild.ownerId !== msg.author.id)
+      return msg.reply('⚠️ Esse usuário tem um cargo igual ou maior que o seu, não posso deixar você fazer isso.');
 
     if (!alvo.kickable)
-      return msg.reply('❌ Não tenho permissão para expulsar esse usuário!');
+      return msg.reply('❌ Não consigo expulsar esse usuário! Verifique se meu cargo está acima do dele.');
 
-    if (db.getConfig('mod_dmPunicoes', 'sim') === 'sim') {
-      const textoDM = t.moderação.kick.dm
-        .replace(/{servidor}/g, msg.guild.name)
-        .replace(/{motivo}/g, motivo);
-      await alvo.send(textoDM).catch(() => {});
-    }
+    await alvo.send(`Você foi expulso(a) do servidor **${msg.guild.name}**.\nMotivo: ${motivo}`).catch(() => {});
 
     db.prepare(`
       INSERT INTO punicoes (usuarioId, moderadorId, tipo, motivo)
       VALUES (?, ?, 'kick', ?)
     `).run(alvo.id, msg.author.id, motivo);
 
-    const embed = new EmbedBuilder()
-      .setColor('#F39C12')
-      .setAuthor({ name: t.moderação.kick.titulo, iconURL: msg.guild.iconURL() })
-      .setThumbnail(alvo.user.displayAvatarURL({ size: 256 }))
-      .addFields(
-        { name: '👤 Usuário', value: `**${alvo.user.tag}**\n\`${alvo.id}\``, inline: true },
-        { name: '🛡️ Moderador', value: `**${msg.author.tag}**`, inline: true },
-        { name: '📝 Motivo', value: motivo }
-      )
-      .setFooter({ text: `ID: ${alvo.id}` })
-      .setTimestamp();
+    await alvo.kick(`${motivo} | Aplicado por: ${msg.author.tag}`);
 
-    const canalLog = msg.guild.channels.cache.get(db.getConfig('mod_canalLog'));
-    if (canalLog) await canalLog.send({ embeds: [embed] });
-
-    await alvo.kick(motivo);
-    await msg.reply({ embeds: [embed] });
+    await msg.reply('✅ Punição aplicada! O registro foi adicionado ao histórico do servidor.');
   }
 };
